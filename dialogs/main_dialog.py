@@ -84,7 +84,7 @@ class MainDialog(ComponentDialog):
 
     async def luis_query_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
         if not self._luis_recognizer.is_configured:
-            message_text = "LUIS Not Configured"
+            message_text = "LUIS Not Configured, Have a check"
             response = self.create_response(turn_context.activity, message_text)
             await turn_context.send_activity(response)
             message_text = "What can I help you with today?"
