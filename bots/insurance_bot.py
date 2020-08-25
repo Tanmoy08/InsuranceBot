@@ -23,6 +23,9 @@ from botbuilder.dialogs import Dialog
 from helpers.dialog_helper import DialogHelper
 from dataModels import ConversationData
 
+
+from .resources.adaptive_card_example import ADAPTIVE_CARD_CONTENT
+
 CARDS = ["resources\\welcome.json"]
 
 class InsuranceBot(ActivityHandler):
@@ -50,8 +53,14 @@ class InsuranceBot(ActivityHandler):
     async def on_members_added_activity(self, members_added: [ChannelAccount], turn_context: TurnContext):
         for member in members_added:
             if member.id != turn_context.activity.recipient.id:
-                message = Activity(type = ActivityTypes.message, attachments=[self._create_adaptive_card_attachment()],)
-                await turn_context.send_activity(message)
+                '''message = Activity(type = ActivityTypes.message, attachments=[self._create_adaptive_card_attachment()],)
+                await turn_context.send_activity(message)'''
+
+                #Adaptive Card 
+                reply = MessageFactory.list([])
+                reply.attachments.append(self.create_adaptive_card())
+                await turn_context.send_activity(reply)
+
                 message_text = "what is your name?"
                 await turn_context.send_activity(message_text)
                 #await turn_context.send_activity("Welcome")
@@ -63,6 +72,9 @@ class InsuranceBot(ActivityHandler):
         conversation_data.data = temp[1:] if len(temp)>5 else temp
 
         await DialogHelper.run_dialog(self.dialog, turn_context,self.conversation_state.create_property("DialogState"))
+
+    def create_adaptive_card(self) -> Attachment:
+        return CardFactory.adaptive_card(ADAPTIVE_CARD_CONTENT)
 
     def _create_adaptive_card_attachment(self) -> Attachment:
          card_path = os.path.join(os.getcwd(), CARDS[0])
