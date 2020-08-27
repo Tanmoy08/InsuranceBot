@@ -16,7 +16,7 @@ from dataModels import UserData, InsuranceDetails
 from helpers.luis_helper import LuisHelper, Intent
 from dialogs import InsuranceRenewalDialog, ReservationBookingDialog
 
-CARDS = ["resources\\suggest_actions.json"]
+from resources.adaptive_card_suggest_actions import ADAPTIVE_CARD_SUGGEST_ACTIONS
 
 import os
 import json
@@ -77,9 +77,11 @@ class MainDialog(ComponentDialog):
         else:
             user_profile.user_greeted = True
             message_text = "Hi "+ user_profile.name+ ", How can I help you today?"
-        message = Activity(type = ActivityTypes.message, attachments=[self._create_adaptive_card_attachment(message_text)],)
         '''prompt_message = MessageFactory.text(message_text, message_text, InputHints.expecting_input)       
         await step_context.context.send_activity(message)'''
+
+        message = Activity(type = ActivityTypes.message, attachments=[self.create_adaptive_card(message_text)],)
+        message.attachments[0].content['body'][0]['columns'][0]['items'][0]['text'] = message_text
         return await step_context.prompt(TextPrompt.__name__, PromptOptions(prompt=message))
 
     async def luis_query_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
@@ -120,9 +122,5 @@ class MainDialog(ComponentDialog):
              ]
          return insurance_services_options
 
-    def _create_adaptive_card_attachment(self, message: str = None) -> Attachment:
-         card_path = os.path.join(os.getcwd(), CARDS[0])
-         with open(card_path, "rb") as in_file:
-             card_data = json.load(in_file)
-             card_data['body'][0]['columns'][0]['items'][0]['text'] = message
-         return CardFactory.adaptive_card(card_data)
+    def create_adaptive_card(self, message: str = None) -> Attachment:
+        return CardFactory.adaptive_card(ADAPTIVE_CARD_SUGGEST_ACTIONS)

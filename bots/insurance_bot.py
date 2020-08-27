@@ -24,9 +24,8 @@ from helpers.dialog_helper import DialogHelper
 from dataModels import ConversationData
 
 
-from .resources.adaptive_card_example import ADAPTIVE_CARD_CONTENT
+from resources.adaptive_card_welcome import ADAPTIVE_CARD_CONTENT
 
-CARDS = ["resources\\welcome.json"]
 
 class InsuranceBot(ActivityHandler):
     def __init__(self, conversation_state: ConversationState, user_state: UserState, dialog: Dialog):
@@ -53,17 +52,11 @@ class InsuranceBot(ActivityHandler):
     async def on_members_added_activity(self, members_added: [ChannelAccount], turn_context: TurnContext):
         for member in members_added:
             if member.id != turn_context.activity.recipient.id:
-                '''message = Activity(type = ActivityTypes.message, attachments=[self._create_adaptive_card_attachment()],)
-                await turn_context.send_activity(message)'''
-
-                #Adaptive Card 
-                reply = MessageFactory.list([])
-                reply.attachments.append(self.create_adaptive_card())
-                await turn_context.send_activity(reply)
+                message = Activity(type = ActivityTypes.message, attachments=[self.create_adaptive_card()],)
+                await turn_context.send_activity(message)
 
                 message_text = "what is your name?"
                 await turn_context.send_activity(message_text)
-                #await turn_context.send_activity("Welcome")
 
     async def on_message_activity(self, turn_context: TurnContext):
         conversation_data = await self.conversation_data_accessor.get(turn_context, ConversationData)
@@ -75,9 +68,3 @@ class InsuranceBot(ActivityHandler):
 
     def create_adaptive_card(self) -> Attachment:
         return CardFactory.adaptive_card(ADAPTIVE_CARD_CONTENT)
-
-    def _create_adaptive_card_attachment(self) -> Attachment:
-         card_path = os.path.join(os.getcwd(), CARDS[0])
-         with open(card_path, "rb") as in_file:
-             card_data = json.load(in_file)
-         return CardFactory.adaptive_card(card_data)

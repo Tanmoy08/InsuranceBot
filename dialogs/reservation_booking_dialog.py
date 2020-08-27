@@ -96,18 +96,18 @@ class ReservationBookingDialog(CancelHelpDialog):
     async def summarize(self, step_context: WaterfallStepContext) -> DialogTurnResult:
         if(step_context.result != None):
             step_context.values["Time"] = step_context.result
-        #message = "Kudos!! A reservation has been made at " +  step_context.values["Location"] + " branch on " + step_context.values["Date"] + " at " + step_context.values["Time"]
+
         message = Activity(type = ActivityTypes.message, attachments=[self.create_thumbnail_card(step_context)])
         await step_context.context.send_activity(message)
         return await step_context.end_dialog()
 
     def create_thumbnail_card(self, step_context: WaterfallStepContext) -> Attachment:
         card = ThumbnailCard(
-            title="Reservation Comfirmed",
-            subtitle= "Kudos!! A reservation has been made at " + step_context.values["Location"] + " branch on " + step_context.values["Date"] + " at " + step_context.values["Time"],
+            title = "Reservation Confirmed",
+            text = "Kudos!! A reservation has been made at " + step_context.values["Location"] + " branch on " + step_context.values["Date"] + " at " + step_context.values["Time"],
             images=[
                 CardImage(
-                    url= os.path.join(os.getcwd(), "resources//Images//BookingConfirmed.png")
+                    url= "https://www.freepngimg.com/thumb/green_tick/27894-7-green-tick-transparent-background.png"
                     )
                 ],
             ) 

@@ -109,18 +109,18 @@ class InsuranceRenewalDialog(ComponentDialog):
     async def summarize(self, step_context: WaterfallStepContext) -> DialogTurnResult:
         if(step_context.result != None):
             step_context.values["DateOfBirth"] = step_context.result
+
         message = Activity(type = ActivityTypes.message, attachments=[self.create_thumbnail_card(step_context)])
-        '''message = "Your Policy Number: " +  step_context.values["PolicyNumber"] + " has been renewed. New Policy number and details will be messaged to " + step_context.values["MobileNumber"]'''
         await step_context.context.send_activity(message)
         return await step_context.end_dialog()
 
     def create_thumbnail_card(self, step_context: WaterfallStepContext) -> Attachment:
         card = ThumbnailCard(
-            title="Insurance Renewed",
-            subtitle= "Your Policy Number: " +  step_context.values["PolicyNumber"] + " has been renewed. New Policy number and details will be messaged to " + step_context.values["MobileNumber"],
+            title ="Insurance Renewed",
+            text = "Your Policy Number: " +  step_context.values["PolicyNumber"] + " has been renewed. \n New Policy number and details will be messaged to " + step_context.values["MobileNumber"],
             images=[
                 CardImage(
-                    url= os.path.join(os.getcwd(), "resources//Images//BookingConfirmed.png")
+                    url= "https://www.freepngimg.com/thumb/green_tick/27894-7-green-tick-transparent-background.png"
                     )
                 ],
             ) 
